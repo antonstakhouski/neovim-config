@@ -58,8 +58,6 @@ call dein#add('L3MON4D3/LuaSnip')
 call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
 " general syntax
-call dein#add('majutsushi/tagbar')
-call dein#add('universal-ctags/ctags')
 call dein#add('AndrewRadev/splitjoin.vim')
 call dein#add('luochen1990/rainbow')
 call dein#add('jiangmiao/auto-pairs')
@@ -70,10 +68,6 @@ call dein#add('ntpeters/vim-better-whitespace')
 " Web
 call dein#add('tell-k/vim-autopep8')
 " call dein#add('ap/vim-css-color') " TODO conflicts with JSX
-call dein#add('pangloss/vim-javascript')
-call dein#add('HerringtonDarkholme/yats.vim')
-call dein#add('MaxMEllon/vim-jsx-pretty')
-call dein#add('Glench/Vim-Jinja2-Syntax')
 call dein#add('prettier/vim-prettier')
 
 " C++
@@ -110,8 +104,6 @@ map <F6> :call FindProjectRoot(expand('%:p:h')) <CR>
 autocmd FileType python noremap <buffer> <F8> :call Autopep8() <CR><Paste>
 autocmd FileType javascript,typescript,less,scss,css,json,graphql,markdown noremap <F8> :Prettier <CR><Paste>
 map <F10> :ClangFormat <CR>
-nmap <F11> :ChromaticaToggle<CR>
-nmap <F12> :TagbarToggle<CR>
 nmap Y :yank<CR>
 
 autocmd FileType python let b:dispatch = 'python -m unittest'
