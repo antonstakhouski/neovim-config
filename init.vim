@@ -48,27 +48,14 @@ call dein#add('scrooloose/nerdcommenter')
 call dein#add('scrooloose/nerdtree')
 call dein#add('ap/vim-buftabline')
 
-" neocomplete
-call dein#add('roxma/nvim-yarp')
-call dein#add('ncm2/ncm2')
-call dein#add('ncm2/ncm2-vim')
-call dein#add('ncm2/ncm2-bufword')
-call dein#add('ncm2/ncm2-path')
-call dein#add('ncm2/ncm2-pyclang')
-call dein#add('ncm2/ncm2-jedi')
-call dein#add('ncm2/ncm2-tern', {'build': 'npm install'})
-call dein#add('ncm2/ncm2-cssomni')
-call dein#add('mhartington/nvim-typescript', {'build': './install.sh'})
-" For async completion
-" call dein#add('Shougo/deoplete.nvim')
-" For Denite features
-" call dein#add('Shougo/denite.nvim')
-call dein#add('ncm2/ncm2-html-subscope')
-
-" snippets
-call dein#add('ncm2/ncm2-ultisnips')
-call dein#add('SirVer/ultisnips')
-call dein#add('antonstakhouski/vim-react-snippets')
+" lsp
+call dein#add('neovim/nvim-lspconfig')
+call dein#add('williamboman/mason.nvim')
+call dein#add('williamboman/mason-lspconfig.nvim')
+call dein#add('hrsh7th/nvim-cmp')
+call dein#add('hrsh7th/cmp-nvim-lsp')
+call dein#add('L3MON4D3/LuaSnip')
+call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
 " general syntax
 call dein#add('majutsushi/tagbar')
@@ -111,10 +98,6 @@ noremap <Leader>p "*p
 noremap <Leader>Y "+y
 noremap <Leader>P "+p
 
-" Press enter key to trigger snippet expansion
-" The parameters are the same as `:help feedkeys()`
-inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
-
 " c-j c-k for moving in snippet
 let g:UltiSnipsExpandTrigger		= "<Plug>(ultisnips_expand)"
 let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
@@ -134,17 +117,6 @@ nmap Y :yank<CR>
 
 autocmd FileType python let b:dispatch = 'python -m unittest'
 
-let g:clang_format#style_options = {
-            \ "AccessModifierOffset" : -4,
-            \ "AllowShortIfStatementsOnASingleLine" : "true",
-            \ "AlwaysBreakTemplateDeclarations" : "true",
-            \ "Standard" : "C++11",
-            \ "BreakBeforeBraces" : "Stroustrup",
-            \ "ColumnLimit" : 80}
-" path to directory where libclang.so can be found
-let g:ncm2_pyclang#library_path = '/opt/rh/llvm-toolset-7/root/usr/lib64/'
-" or path to the libclang.so file
-let g:ncm2_pyclang#library_path = '/opt/rh/llvm-toolset-7/root/usr/lib64/libclang.so.5.0'
 let g:python3_host_prog = '~/miniconda3/envs/nvim3/bin/python'
 let g:node_host_prog = '~/miniconda3/envs/nvim3/bin/neovim-node-host'
 
@@ -154,11 +126,6 @@ let g:fzf_layout = { 'down': '~40%' }
 colorscheme edge
 
 autocmd FileType cpp,h setlocal expandtab smartindent autoindent tabstop=4 shiftwidth=4
-
-" Use <TAB> to select the popup menu:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 
 " Synastic settings
 set statusline+=%#warningmsg#
@@ -184,8 +151,6 @@ let g:syntastic_javascript_eslint_exec  = "/home/anton/GitLab/issa/app/static/no
 let g:syntastic_javascript_checkers = []
 let g:syntastic_filetype_map = {"javascriptreact": "javascript" }
 
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
 
 let g:AutoPairsMapCR = 0
@@ -339,3 +304,33 @@ fun! SetDiffColors()
   highlight DiffText   cterm=bold ctermfg=white ctermbg=DarkRed
 endfun
 autocmd FilterWritePre * call SetDiffColors()
+
+"lsp
+lua <<EOF
+  local lsp_zero = require('lsp-zero')
+
+  lsp_zero.on_attach(function(client, bufnr)
+    -- see :help lsp-zero-keybindings
+    -- to learn the available actions
+    lsp_zero.default_keymaps({buffer = bufnr})
+  end)
+
+  -- see :help lsp-zero-guide:integrate-with-mason-nvim
+  -- to learn how to use mason.nvim with lsp-zero
+  require('mason').setup({})
+  require('mason-lspconfig').setup({
+    handlers = {
+      lsp_zero.default_setup,
+    }
+  })
+
+  local cmp = require('cmp')
+  local cmp_action = lsp_zero.cmp_action()
+
+  cmp.setup({
+    mapping = cmp.mapping.preset.insert({
+      ['<CR>'] = cmp.mapping.confirm({select = false}),
+    })
+  })
+
+EOF
