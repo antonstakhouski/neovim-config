@@ -61,7 +61,6 @@ call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 call dein#add('majutsushi/tagbar')
 call dein#add('universal-ctags/ctags')
 call dein#add('AndrewRadev/splitjoin.vim')
-call dein#add('vim-syntastic/syntastic.git')
 call dein#add('luochen1990/rainbow')
 call dein#add('jiangmiao/auto-pairs')
 call dein#add('tpope/vim-surround')
@@ -126,30 +125,6 @@ let g:fzf_layout = { 'down': '~40%' }
 colorscheme edge
 
 autocmd FileType cpp,h setlocal expandtab smartindent autoindent tabstop=4 shiftwidth=4
-
-" Synastic settings
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-
-let g:syntastic_aggregate_errors = 1
-
-" let g:syntastic_cpp_checkers = ['cppcheck', 'clang_tidy']
-let g:syntastic_cpp_checkers = []
-let g:syntastic_python_checkers = ["flake8"]
-let g:syntastic_po_checkers = ["dennis"]
-let g:syntastic_cpp_cppcheck_args = "--std=c++11 --language=c++ --enable=warning,performance"
-let g:syntastic_cpp_clang_tidy_post_args = ""
-
-let g:syntastic_javascript_eslint_exec  = "/home/anton/GitLab/issa/app/static/node_modules/.bin/eslint"
-" let g:syntastic_javascript_checkers = ["eslint"]
-let g:syntastic_javascript_checkers = []
-let g:syntastic_filetype_map = {"javascriptreact": "javascript" }
 
 set completeopt=noinsert,menuone,noselect
 
@@ -329,8 +304,7 @@ lua <<EOF
 
   cmp.setup({
     mapping = cmp.mapping.preset.insert({
-      ['<CR>'] = cmp.mapping.confirm({select = false}),
+      ['<TAB>'] = cmp.mapping.select_next_item()
     })
   })
-
 EOF
