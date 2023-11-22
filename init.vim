@@ -56,6 +56,8 @@ call dein#add('L3MON4D3/LuaSnip')
 call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
 " snippets
+call dein#add('saadparwaiz1/cmp_luasnip')
+call dein#add('rafamadriz/friendly-snippets')
 
 " exit dein
 call dein#end()
@@ -109,16 +111,24 @@ lua <<EOF
   local cmp_action = require('lsp-zero').cmp_action()
   local cmp_format = require('lsp-zero').cmp_format()
 
+  require('luasnip.loaders.from_vscode').lazy_load()
+
   cmp.setup({
     sources = {
       {name = 'nvim_lsp'},
       {name = 'luasnip'},
     },
     mapping = cmp.mapping.preset.insert({
-      ['<TAB>'] = cmp.mapping.select_next_item() -- use TAB to switch completion items
+      ['<TAB>'] = cmp.mapping.select_next_item(), -- use TAB to switch completion items
+      ['<CR>'] = cmp.mapping.confirm({select = false}), -- use CR to complete (for snippets)
     }),
     --- (Optional) Show source name in completion menu
     formatting = cmp_format,
+    snippet = {
+      expand = function(args)
+        require'luasnip'.lsp_expand(args.body)
+      end
+    },
   })
 
   -- treesitter config
