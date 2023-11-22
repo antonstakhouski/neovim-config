@@ -57,6 +57,10 @@ call dein#add('hrsh7th/cmp-nvim-lsp')
 call dein#add('L3MON4D3/LuaSnip')
 call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
+" snippets
+" call dein#add('antonstakhouski/vim-react-snippets')
+call dein#add('afamadriz/friendly-snippets')
+
 " general syntax
 call dein#add('AndrewRadev/splitjoin.vim')
 call dein#add('luochen1990/rainbow')
@@ -261,7 +265,6 @@ let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowTo
 
 autocmd Bufread,BufNewFile *.md set filetype=markdown " Vim interprets .md as 'modula2' otherwise, see :set filetype?
 autocmd BufRead,BufNewFile *.html set syntax=jinja.html
-autocmd BufRead,BufNewFile *.jsx set filetype=javascript
 
 " Change colourscheme when diffing
 fun! SetDiffColors()
@@ -279,7 +282,10 @@ lua <<EOF
   lsp_zero.on_attach(function(client, bufnr)
     -- see :help lsp-zero-keybindings
     -- to learn the available actions
-    lsp_zero.default_keymaps({buffer = bufnr})
+    lsp_zero.default_keymaps({
+      buffer = bufnr,
+      preserve_mappings = false
+    })
   end)
 
   -- see :help lsp-zero-guide:integrate-with-mason-nvim
@@ -292,11 +298,17 @@ lua <<EOF
   })
 
   local cmp = require('cmp')
-  local cmp_action = lsp_zero.cmp_action()
+  local cmp_action = require('lsp-zero').cmp_action()
+
+  require('luasnip.loaders.from_vscode').lazy_load()
 
   cmp.setup({
+    sources = {
+      {name = 'nvim_lsp'},
+      {name = 'luasnip'},
+    },
     mapping = cmp.mapping.preset.insert({
       ['<TAB>'] = cmp.mapping.select_next_item()
-    })
+    }),
   })
 EOF
