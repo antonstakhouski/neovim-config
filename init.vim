@@ -55,6 +55,8 @@ call dein#add('hrsh7th/cmp-nvim-lsp')
 call dein#add('L3MON4D3/LuaSnip')
 call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
+" snippets
+
 " exit dein
 call dein#end()
 " auto-install missing packages on startup
@@ -64,6 +66,10 @@ endif
 
 " default config
 set number
+set cursorline
+set ignorecase
+" paste line at newline
+nmap Y :yank<CR>
 colorscheme edge
 
 " filetype settings
@@ -101,6 +107,7 @@ lua <<EOF
 
   local cmp = require('cmp')
   local cmp_action = require('lsp-zero').cmp_action()
+  local cmp_format = require('lsp-zero').cmp_format()
 
   cmp.setup({
     sources = {
@@ -110,6 +117,8 @@ lua <<EOF
     mapping = cmp.mapping.preset.insert({
       ['<TAB>'] = cmp.mapping.select_next_item() -- use TAB to switch completion items
     }),
+    --- (Optional) Show source name in completion menu
+    formatting = cmp_format,
   })
 
   -- treesitter config
