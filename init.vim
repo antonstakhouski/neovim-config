@@ -43,8 +43,9 @@ call dein#add('scrooloose/nerdtree')
 call dein#add('ctrlpvim/ctrlp.vim') " search by filename
 call dein#add('junegunn/fzf.vim')
 
-" treesitter
+" general syntax
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
+call dein#add('jiangmiao/auto-pairs')
 
 " lsp
 call dein#add('neovim/nvim-lspconfig')
@@ -57,7 +58,8 @@ call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
 " snippets
 call dein#add('saadparwaiz1/cmp_luasnip')
-call dein#add('rafamadriz/friendly-snippets')
+" call dein#add('rafamadriz/friendly-snippets')
+call dein#add('antonstakhouski/vim-react-snippets')
 
 " exit dein
 call dein#end()
@@ -70,12 +72,14 @@ endif
 set number
 set cursorline
 set ignorecase
+set nowrap
 " paste line at newline
 nmap Y :yank<CR>
 colorscheme edge
 
 " filetype settings
 autocmd FileType javascript,javascriptreact setlocal foldmethod=syntax foldnestmax=1 tabstop=2 shiftwidth=2 softtabstop=2 expandtab autoindent textwidth=109 colorcolumn=109
+autocmd FileType json setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab autoindent
 
 " plugins
 map <F3> :NERDTreeToggle <CR>
