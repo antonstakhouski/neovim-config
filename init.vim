@@ -42,6 +42,7 @@ call dein#add('scrooloose/nerdcommenter')
 call dein#add('scrooloose/nerdtree')
 call dein#add('ctrlpvim/ctrlp.vim') " search by filename
 call dein#add('junegunn/fzf.vim')
+call dein#add('tpope/vim-surround')
 
 " general syntax
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
@@ -78,8 +79,9 @@ nmap Y :yank<CR>
 colorscheme edge
 
 " filetype settings
-autocmd FileType javascript,javascriptreact setlocal foldmethod=syntax foldnestmax=1 tabstop=2 shiftwidth=2 softtabstop=2 expandtab autoindent textwidth=109 colorcolumn=109
-autocmd FileType json setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab autoindent
+autocmd FileType javascript,javascriptreact setlocal foldmethod=syntax foldnestmax=1 textwidth=109 colorcolumn=109
+autocmd FileType scss,json,javascript,javascriptreact,htmldjango setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
 " plugins
 map <F3> :NERDTreeToggle <CR>
@@ -149,6 +151,11 @@ lua <<EOF
 
     -- List of parsers to ignore installing (or "all")
     ignore_install = { },
+
+    -- Experimental
+    indent = {
+      enable = true
+    },
 
     ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
     -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
