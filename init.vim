@@ -74,14 +74,19 @@ set number
 set cursorline
 set ignorecase
 set nowrap
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set nofoldenable " Disable folding at startup.
+
 " paste line at newline
 nmap Y :yank<CR>
 colorscheme edge
 
 " filetype settings
-autocmd FileType javascript,javascriptreact setlocal foldmethod=syntax foldnestmax=1 textwidth=109 colorcolumn=109
+autocmd FileType javascript,javascriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
 autocmd FileType scss,json,javascript,javascriptreact,htmldjango setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+autocmd FileType po setlocal spell spelllang=ru_ru,en_us
 
 " plugins
 map <F3> :NERDTreeToggle <CR>
