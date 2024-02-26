@@ -40,6 +40,7 @@ call dein#add('vim-airline/vim-airline-themes')
 " tools
 call dein#add('scrooloose/nerdcommenter')
 call dein#add('scrooloose/nerdtree')
+call dein#add('ryanoasis/vim-devicons')
 call dein#add('ctrlpvim/ctrlp.vim') " search by filename
 call dein#add('junegunn/fzf.vim')
 call dein#add('tpope/vim-surround')
@@ -59,8 +60,14 @@ call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
 " snippets
 call dein#add('saadparwaiz1/cmp_luasnip')
-" call dein#add('rafamadriz/friendly-snippets')
 call dein#add('antonstakhouski/vim-react-snippets')
+
+" harpoon
+call dein#add('nvim-lua/plenary.nvim')
+call dein#add('ThePrimeagen/harpoon', #{ rev: 'harpoon2' })
+
+" GitHub Copilot
+call dein#add('github/copilot.vim')
 
 " exit dein
 call dein#end()
@@ -84,7 +91,7 @@ colorscheme edge
 
 " filetype settings
 autocmd FileType javascript,javascriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
-autocmd FileType scss,json,javascript,javascriptreact,htmldjango setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType scss,json,javascript,javascriptreact,htmldjango,html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 autocmd FileType po setlocal spell spelllang=ru_ru,en_us
 
@@ -96,6 +103,10 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standar
 " Airline (status line)
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1 " show opened buffers
+
+" GitHub Copilot
+let g:copilot_assume_mapped = 1
+let g:AutoPairsMoveCharacter = ""
 
 "lsp
 lua <<EOF
@@ -189,4 +200,19 @@ lua <<EOF
       additional_vim_regex_highlighting = false,
     },
   }
+
+  -- harpoon config
+  local harpoon = require("harpoon")
+
+  -- REQUIRED
+  harpoon:setup()
+  -- REQUIRED
+
+  vim.keymap.set("n", "<leader>a", function() harpoon:list():append() end)
+  vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+  vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+  vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+  vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+  vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
 EOF
