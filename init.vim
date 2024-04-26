@@ -44,6 +44,8 @@ call dein#add('ryanoasis/vim-devicons')
 call dein#add('ctrlpvim/ctrlp.vim') " search by filename
 call dein#add('junegunn/fzf.vim')
 call dein#add('tpope/vim-surround')
+call dein#add('tpope/vim-fugitive')
+call dein#add('tell-k/vim-autopep8')
 
 " general syntax
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
@@ -55,7 +57,7 @@ call dein#add('williamboman/mason.nvim')
 call dein#add('williamboman/mason-lspconfig.nvim')
 call dein#add('hrsh7th/nvim-cmp')
 call dein#add('hrsh7th/cmp-nvim-lsp')
-call dein#add('L3MON4D3/LuaSnip')
+call dein#add('L3MON4D3/LuaSnip', #{ rev: 'v2.3' })
 call dein#add('VonHeikemen/lsp-zero.nvim', #{ rev: 'v3.x' })
 
 " snippets
@@ -91,12 +93,13 @@ colorscheme edge
 
 " filetype settings
 autocmd FileType javascript,javascriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
-autocmd FileType scss,json,javascript,javascriptreact,htmldjango,html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType scss,json,javascript,javascriptreact,htmldjango,html,svg,vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 autocmd FileType po setlocal spell spelllang=ru_ru,en_us
 
 " plugins
 map <F3> :NERDTreeToggle <CR>
+let g:NERDTreeWinSize=50
 " makes ctrlp faster somehow
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
@@ -106,7 +109,16 @@ let g:airline#extensions#tabline#enabled = 1 " show opened buffers
 
 " GitHub Copilot
 let g:copilot_assume_mapped = 1
+imap <M-Down> <Plug>(copilot-accept-line)
 let g:AutoPairsMoveCharacter = ""
+
+" providers
+let g:python3_host_prog = '~/miniconda3/envs/nvim3/bin/python'
+let g:node_host_prog = '~/miniconda3/envs/nvim3/bin/neovim-node-host'
+
+" autopep8
+autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>:colorscheme edge<CR>
+let g:autopep8_disable_show_diff=1
 
 "lsp
 lua <<EOF
