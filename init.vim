@@ -51,6 +51,9 @@ call dein#add('tell-k/vim-autopep8')
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
 call dein#add('jiangmiao/auto-pairs')
 
+" python
+call dein#add('Glench/Vim-Jinja2-Syntax')
+
 " lsp
 call dein#add('neovim/nvim-lspconfig')
 call dein#add('williamboman/mason.nvim')
@@ -94,7 +97,7 @@ colorscheme edge
 " filetype settings
 autocmd FileType javascript,javascriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
 autocmd FileType scss,json,javascript,javascriptreact,htmldjango,html,svg,vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab textwidth=79 colorcolumn=79
 autocmd FileType po setlocal spell spelllang=ru_ru,en_us
 
 " plugins
@@ -117,6 +120,7 @@ let g:python3_host_prog = '~/miniconda3/envs/nvim3/bin/python'
 let g:node_host_prog = '~/miniconda3/envs/nvim3/bin/neovim-node-host'
 
 " autopep8
+" autopep brokes colorscheme, so we need to set it back
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>:colorscheme edge<CR>
 let g:autopep8_disable_show_diff=1
 
@@ -220,7 +224,7 @@ lua <<EOF
   harpoon:setup()
   -- REQUIRED
 
-  vim.keymap.set("n", "<leader>a", function() harpoon:list():append() end)
+  vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
   vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
   vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
