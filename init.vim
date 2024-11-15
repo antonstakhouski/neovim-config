@@ -54,6 +54,9 @@ call dein#add('jiangmiao/auto-pairs')
 " python
 call dein#add('Glench/Vim-Jinja2-Syntax')
 
+" css
+call dein#add('ap/vim-css-color')
+
 " lsp
 call dein#add('neovim/nvim-lspconfig')
 call dein#add('williamboman/mason.nvim')
@@ -94,11 +97,15 @@ set nofoldenable " Disable folding at startup.
 nmap Y :yank<CR>
 colorscheme edge
 
+" load project level config
+set exrc
+
 " filetype settings
 autocmd FileType javascript,javascriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
-autocmd FileType scss,json,javascript,javascriptreact,htmldjango,html,svg,vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType tex,css,scss,json,javascript,javascriptreact,htmldjango,html,svg,vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab textwidth=79 colorcolumn=79
 autocmd FileType po setlocal spell spelllang=ru_ru,en_us
+autocmd FileType tex setlocal spell spelllang=en_us
 
 " plugins
 map <F3> :NERDTreeToggle <CR>
@@ -114,6 +121,10 @@ let g:airline#extensions#tabline#enabled = 1 " show opened buffers
 let g:copilot_assume_mapped = 1
 imap <M-Down> <Plug>(copilot-accept-line)
 let g:AutoPairsMoveCharacter = ""
+
+" Use tmux clipboard for copy/paste
+vmap <C-c> :w !wl-copy<CR><CR>
+nmap <C-v> :r !wl-paste<CR>
 
 " providers
 let g:python3_host_prog = '~/miniconda3/envs/nvim3/bin/python'
@@ -199,7 +210,7 @@ lua <<EOF
       -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
       -- the name of the parser)
       -- list of language that will be disabled
-      disable = { "c", "rust" },
+      disable = { "tex" },
       -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
       disable = function(lang, buf)
           local max_filesize = 100 * 1024 -- 100 KB
