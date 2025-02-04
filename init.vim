@@ -101,8 +101,8 @@ colorscheme edge
 set exrc
 
 " filetype settings
-autocmd FileType javascript,javascriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
-autocmd FileType tex,css,scss,json,javascript,javascriptreact,htmldjango,html,svg,vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType javascript,javascriptreact,typescript,typescriptreact setlocal foldnestmax=1 textwidth=109 colorcolumn=109
+autocmd FileType tex,css,scss,json,javascript,javascriptreact,typescript,typescriptreact,htmldjango,html,svg,vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab textwidth=79 colorcolumn=79
 autocmd FileType po setlocal spell spelllang=ru_ru,en_us
 autocmd FileType tex setlocal spell spelllang=en_us
@@ -155,6 +155,21 @@ lua <<EOF
       lsp_zero.default_setup,
     }
   })
+
+  local lspconfig = require('lspconfig')
+
+  -- Setup eslint-lsp
+  lspconfig.eslint.setup {
+    -- Custom function to set the root directory
+    root_dir = function(fname)
+      return lspconfig.util.root_pattern('app/static/eslint.config.mjs')(fname)
+          or lspconfig.util.root_pattern('.git')(fname)
+          or lspconfig.util.path.dirname(fname)
+    end,
+    settings = {
+      workingDirectory = { mode = 'location' }, -- Use the config file's location
+    },
+  }
 
   local cmp = require('cmp')
   local cmp_action = require('lsp-zero').cmp_action()
