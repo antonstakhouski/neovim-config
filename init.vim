@@ -58,6 +58,7 @@ call dein#add('Glench/Vim-Jinja2-Syntax')
 call dein#add('ap/vim-css-color')
 
 " lsp
+call dein#add('jose-elias-alvarez/null-ls.nvim')
 call dein#add('neovim/nvim-lspconfig')
 call dein#add('williamboman/mason.nvim')
 call dein#add('williamboman/mason-lspconfig.nvim')
@@ -156,6 +157,14 @@ lua <<EOF
     }
   })
 
+  local null_ls = require('null-ls')
+
+  null_ls.setup({
+    sources = {
+      null_ls.builtins.formatting.prettierd,
+    },
+  })
+
   local lspconfig = require('lspconfig')
 
   -- Setup eslint-lsp
@@ -169,6 +178,15 @@ lua <<EOF
     settings = {
       workingDirectory = { mode = 'location' }, -- Use the config file's location
     },
+    on_attach = function(client, bufnr)
+      -- Format on save
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ async = true })
+        end,
+      })
+    end,
   }
 
   local cmp = require('cmp')
