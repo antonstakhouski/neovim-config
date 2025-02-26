@@ -187,6 +187,7 @@ lua <<EOF
     settings = {
       workingDirectory = { mode = 'location' }, -- Use the config file's location
     },
+    filetypes = { "scss", "javascript", "typescript" }, -- Add SCSS to the list of filetypes
     on_attach = function(client, bufnr)
       -- Format on save
       vim.api.nvim_create_autocmd("BufWritePre", {
