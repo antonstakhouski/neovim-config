@@ -38,9 +38,9 @@ call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 
 " tools
-call dein#add('scrooloose/nerdcommenter')
-call dein#add('scrooloose/nerdtree')
-call dein#add('ryanoasis/vim-devicons')
+call dein#add('preservim/nerdcommenter')
+call dein#add('nvim-tree/nvim-tree.lua')
+call dein#add('nvim-tree/nvim-web-devicons')
 call dein#add('ctrlpvim/ctrlp.vim') " search by filename
 call dein#add('junegunn/fzf.vim')
 call dein#add('tpope/vim-surround')
@@ -49,7 +49,7 @@ call dein#add('tell-k/vim-autopep8')
 
 " general syntax
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
-call dein#add('jiangmiao/auto-pairs')
+call dein#add('windwp/nvim-autopairs')
 
 " python
 call dein#add('Glench/Vim-Jinja2-Syntax')
@@ -118,8 +118,7 @@ highlight TrailingSpaces ctermbg=red guibg=red
 match TrailingSpaces /\s\+$/
 
 " plugins
-map <F3> :NERDTreeToggle <CR>
-let g:NERDTreeWinSize=50
+
 " makes ctrlp faster somehow
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
@@ -130,7 +129,6 @@ let g:airline#extensions#tabline#enabled = 1 " show opened buffers
 " GitHub Copilot
 let g:copilot_assume_mapped = 1
 imap <M-Down> <Plug>(copilot-accept-line)
-let g:AutoPairsMoveCharacter = ""
 
 " Use tmux clipboard for copy/paste
 vmap <C-c> :w !wl-copy<CR><CR>
@@ -243,6 +241,9 @@ lua <<EOF
     },
   })
 
+  -- auto-pairs
+  require("nvim-autopairs").setup({})
+
   -- treesitter config
   require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all" (the five listed parsers should always be installed)
@@ -290,6 +291,39 @@ lua <<EOF
       additional_vim_regex_highlighting = false,
     },
   }
+
+  -- nvim-tree config
+  -- disable netrw at the very start of your init.lua
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
+
+  -- optionally enable 24-bit colour
+  vim.opt.termguicolors = true
+
+  -- OR setup with some options
+  require("nvim-tree").setup({
+    sort = {
+      sorter = "case_sensitive",
+    },
+    view = {
+      width = 50,
+    },
+    renderer = {
+      group_empty = true,
+    },
+    filters = {
+      dotfiles = true,
+    },
+  })
+
+  -- toggle nvim-tree
+  vim.api.nvim_set_keymap('n', '<F3>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+
+  -- Highlight group for NvimTree background
+  vim.cmd([[
+    highlight NvimTreeNormal guibg=#2c2e34
+    highlight NvimTreeEndOfBuffer guibg=#2c2e34
+  ]])
 
   -- harpoon config
   local harpoon = require("harpoon")
