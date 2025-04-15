@@ -107,8 +107,6 @@ return {
   { "L3MON4D3/LuaSnip" },
   {
     "hrsh7th/nvim-cmp",
-    -- load cmp on InsertEnter
-    event = "InsertEnter",
     -- these dependencies will only be loaded when cmp loads
     -- dependencies are always lazy-loaded unless specified otherwise
     dependencies = {
@@ -356,7 +354,6 @@ return {
   -- Copilot
   {
     "github/copilot.vim",
-    event = "InsertEnter",
     config = function()
       vim.g.copilot_assume_mapped = 1
       vim.g.copilot_node_command = vim.fn.expand("~/miniconda3/envs/nvim3/bin/node")
