@@ -51,8 +51,7 @@ call dein#add('tell-k/vim-autopep8')
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': 'TSUpdate'})
 call dein#add('windwp/nvim-autopairs')
 
-" python
-call dein#add('Glench/Vim-Jinja2-Syntax')
+call dein#add('HiPhish/jinja.vim')
 
 " css colors
 call dein#add('norcalli/nvim-colorizer.lua')
@@ -128,7 +127,16 @@ let g:airline#extensions#tabline#enabled = 1 " show opened buffers
 
 " GitHub Copilot
 let g:copilot_assume_mapped = 1
+let g:copilot_node_command = '~/miniconda3/envs/nvim3/bin/node'
 imap <M-Down> <Plug>(copilot-accept-line)
+
+autocmd! BufRead,BufNewFile *.html  call jinja#AdjustFiletype()
+if !get(b:, 'jinja_syntax_autocmd_loaded', v:false)
+        if luaeval("vim.treesitter.language.get_lang('jinja')") == v:null
+                autocmd FileType <buffer> if !empty(&ft) | setlocal syntax=on | endif
+        endif
+        let b:jinja_syntax_autocmd_loaded = v:true
+endif
 
 " Use tmux clipboard for copy/paste
 vmap <C-c> :w !wl-copy<CR><CR>
@@ -323,6 +331,7 @@ lua <<EOF
   vim.cmd([[
     highlight NvimTreeNormal guibg=#2c2e34
     highlight NvimTreeEndOfBuffer guibg=#2c2e34
+    highlight NvimTreeCursorLine guibg=#33353f
   ]])
 
   -- harpoon config
