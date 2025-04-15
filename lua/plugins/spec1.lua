@@ -1,0 +1,316 @@
+return {
+  -- the colorscheme should be available when starting Neovim
+  {
+    "folke/tokyonight.nvim",
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      -- load the colorscheme here
+      vim.cmd([[colorscheme tokyonight]])
+    end,
+  },
+
+  -- Start screen
+  {
+    "mhinz/vim-startify",
+    lazy = false,
+  },
+
+  -- Git
+  { "mhinz/vim-signify" },
+  { "tpope/vim-fugitive" },
+
+  -- Lightline
+  -- TODO: change theme
+  { "itchyny/lightline.vim" },
+
+   -- Tools
+  { "preservim/nerdcommenter" },
+  {
+	  "nvim-tree/nvim-tree.lua",
+	  version = "*",
+	  lazy = false,
+	  dependencies = {
+		  "nvim-tree/nvim-web-devicons",
+	  },
+	  config = function()
+      require("nvim-tree").setup({
+        sort = {
+          sorter = "case_sensitive",
+        },
+        view = {
+          width = 50,
+        },
+        renderer = {
+          group_empty = true,
+        },
+        filters = {
+          dotfiles = true,
+        },
+      })
+
+      vim.api.nvim_set_keymap('n', '<F3>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+	  end,
+  },
+  {
+    'nvim-telescope/telescope.nvim', tag = '0.1.8',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+    end,
+  },
+  { "tell-k/vim-autopep8" },
+
+  -- Completion menu
+  { "L3MON4D3/LuaSnip" },
+  {
+    "hrsh7th/nvim-cmp",
+    -- load cmp on InsertEnter
+    event = "InsertEnter",
+    -- these dependencies will only be loaded when cmp loads
+    -- dependencies are always lazy-loaded unless specified otherwise
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "VonHeikemen/lsp-zero.nvim",
+    },
+    config = function()
+      local cmp = require('cmp')
+      local cmp_action = require('lsp-zero').cmp_action()
+      local cmp_format = require('lsp-zero').cmp_format()
+
+      require('luasnip.loaders.from_vscode').lazy_load()
+
+      cmp.setup({
+        sources = {
+          {name = 'nvim_lsp'},
+          {name = 'luasnip'},
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<TAB>'] = cmp.mapping.select_next_item(), -- use TAB to switch completion items
+          ['<CR>'] = cmp.mapping.confirm({select = false}), -- use CR to complete (for snippets)
+        }),
+        --- (Optional) Show source name in completion menu
+        formatting = cmp_format,
+        snippet = {
+          expand = function(args)
+            require'luasnip'.lsp_expand(args.body)
+          end
+        },
+      })
+    end,
+  },
+  { "saadparwaiz1/cmp_luasnip" },
+  { "antonstakhouski/vim-react-snippets" },
+
+  -- Syntax & Treesitter
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
+      require'nvim-treesitter.configs'.setup {
+        -- A list of parser names, or "all" (the five listed parsers should always be installed)
+        ensure_installed = { "lua", "vim", "javascript", "typescript", "python" },
+
+        -- Install parsers synchronously (only applied to `ensure_installed`)
+        sync_install = false,
+
+        -- Automatically install missing parsers when entering buffer
+        -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+        auto_install = true,
+
+        -- List of parsers to ignore installing (or "all")
+        ignore_install = { },
+
+        -- Experimental
+        indent = {
+          enable = true
+        },
+
+        ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+        -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+        highlight = {
+          enable = true,
+
+          -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+          -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+          -- the name of the parser)
+          -- list of language that will be disabled
+          disable = { "tex" },
+          -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+          disable = function(lang, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+              return true
+            end
+          end,
+
+          -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+          -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+          -- Using this option may slow down your editor, and you may see some duplicate highlights.
+          -- Instead of true it can also be a list of languages
+          additional_vim_regex_highlighting = false,
+        },
+      }
+    end,
+  },
+  {
+    "windwp/nvim-autopairs",
+    config = function()
+      require("nvim-autopairs").setup({})
+    end,
+  },
+  -- TODO: works not very good
+  {
+    "HiPhish/jinja.vim",
+    config = function()
+      local autocmd = vim.api.nvim_create_autocmd
+      local augroup = vim.api.nvim_create_augroup
+
+      -- Adjust filetype on *.html for Jinja
+      autocmd({ "BufRead", "BufNewFile" }, {
+        pattern = "*.html",
+        callback = function()
+          vim.fn["jinja#AdjustFiletype"]()
+        end,
+      })
+
+      -- One-time setup to handle missing Treesitter parser for jinja
+      autocmd("FileType", {
+        group = augroup("JinjaSyntaxFix", { clear = true }),
+        callback = function(args)
+          if vim.b.jinja_syntax_autocmd_loaded then return end
+
+          local has_treesitter = vim.treesitter.language.get_lang("jinja") ~= nil
+
+          if not has_treesitter and vim.bo[args.buf].filetype ~= "" then
+            vim.bo[args.buf].syntax = "on"
+          end
+
+          vim.b.jinja_syntax_autocmd_loaded = true
+        end,
+      })
+    end,
+  },
+
+  -- CSS Colorizer
+  {
+    "norcalli/nvim-colorizer.lua",
+    config = function()
+      -- Enable true color support if available
+      if vim.fn.has("termguicolors") == 1 then
+        vim.opt.termguicolors = true
+      end
+      require('colorizer').setup({ '*'; }, { RRGGBBAA = true; })
+    end,
+  },
+
+  -- LSP & Completion
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    config = function()
+      local null_ls = require('null-ls')
+
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.prettierd,
+        },
+      })
+    end,
+  },
+  {
+    "VonHeikemen/lsp-zero.nvim",
+    version = "v3.x",
+    lazy = false, -- ensure it loads before others
+    config = function()
+      local lsp_zero = require('lsp-zero')
+
+      lsp_zero.on_attach(function(client, bufnr)
+        lsp_zero.default_keymaps({ buffer = bufnr })
+      end)
+    end,
+  },
+  {
+    "williamboman/mason.nvim",
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+      "neovim/nvim-lspconfig",
+      "VonHeikemen/lsp-zero.nvim",
+    },
+    config = function()
+      require("mason").setup()
+
+      require("mason-lspconfig").setup({
+        handlers = {
+          require("lsp-zero").default_setup,
+        }
+      })
+
+      local lspconfig = require('lspconfig')
+
+      -- Setup eslint-lsp
+      lspconfig.eslint.setup {
+        -- Custom function to set the root directory
+        root_dir = function(fname)
+          return lspconfig.util.root_pattern('app/static/eslint.config.mjs')(fname)
+          or lspconfig.util.root_pattern('.git')(fname)
+          or lspconfig.util.path.dirname(fname)
+        end,
+        settings = {
+          workingDirectory = { mode = 'location' }, -- Use the config file's location
+        },
+        filetypes = { "scss", "javascript", "typescript" }, -- Add SCSS to the list of filetypes
+        on_attach = function(client, bufnr)
+          -- Format on save
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.format({ async = false })
+            end,
+          })
+        end,
+      }
+    end,
+  },
+
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local harpoon = require("harpoon")
+
+      -- REQUIRED
+      harpoon:setup()
+      -- REQUIRED
+
+      vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+      vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+      vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+      vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+      vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+      vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+      vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+    end,
+  },
+
+  -- Copilot
+  {
+    "github/copilot.vim",
+    event = "InsertEnter",
+    config = function()
+      vim.g.copilot_assume_mapped = 1
+      vim.g.copilot_node_command = vim.fn.expand("~/miniconda3/envs/nvim3/bin/node")
+      vim.keymap.set("i", "<M-Down>", "<Plug>(copilot-accept-line)", { silent = true })
+    end,
+  },
+}
