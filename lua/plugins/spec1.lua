@@ -12,20 +12,59 @@ return {
 
   -- Start screen
   {
-    "mhinz/vim-startify",
-    lazy = false,
+    'nvimdev/dashboard-nvim',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    event = 'VimEnter',
+    config = function()
+      require('dashboard').setup {
+        -- config
+      }
+    end,
   },
 
   -- Git
-  { "mhinz/vim-signify" },
-  { "tpope/vim-fugitive" },
+  {
+    "lewis6991/gitsigns.nvim",
+    event = "BufReadPre",
+    config = function()
+      require("gitsigns").setup()
+    end,
+  },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",         -- required
+      "sindrets/diffview.nvim",        -- optional - Diff integration
+      "nvim-telescope/telescope.nvim",
+    },
+  },
 
-  -- Lightline
-  -- TODO: change theme
-  { "itchyny/lightline.vim" },
+  -- Lualine
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    event = "VeryLazy",
+    config = function()
+      require("lualine").setup({
+        options = {
+          theme = "auto",
+          icons_enabled = true,
+          section_separators = "",
+          component_separators = "|",
+        },
+      })
+    end,
+  },
 
    -- Tools
-  { "preservim/nerdcommenter" },
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end,
+  },
   {
 	  "nvim-tree/nvim-tree.lua",
 	  version = "*",
@@ -63,7 +102,6 @@ return {
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
     end,
   },
-  { "tell-k/vim-autopep8" },
 
   -- Completion menu
   { "L3MON4D3/LuaSnip" },
@@ -212,14 +250,26 @@ return {
 
   -- LSP & Completion
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       local null_ls = require('null-ls')
 
       null_ls.setup({
         sources = {
           null_ls.builtins.formatting.prettierd,
+          null_ls.builtins.formatting.black,
         },
+        on_attach = function(client, bufnr)
+          if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              callback = function()
+                vim.lsp.buf.format({ bufnr = bufnr })
+              end,
+            })
+          end
+        end,
       })
     end,
   },
