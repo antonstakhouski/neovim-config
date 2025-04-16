@@ -20,13 +20,5 @@ vim.keymap.set("n", "Y", ":yank<CR>", { noremap = true, silent = true })
 vim.g.python3_host_prog = vim.fn.expand("~/miniconda3/envs/nvim3/bin/python")
 vim.g.node_host_prog = vim.fn.expand("~/miniconda3/envs/nvim3/bin/neovim-node-host")
 
--- Autopep8
-vim.g.autopep8_disable_show_diff = 1
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "python",
-  callback = function()
-    vim.keymap.set("n", "<F8>", function()
-      vim.cmd("call Autopep8()")         -- run autopep8
-    end, { buffer = true, noremap = true, silent = true })
-  end,
-})
+-- Better diagnostics output
+vim.diagnostic.config({ virtual_lines = true })
