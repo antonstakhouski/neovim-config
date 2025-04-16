@@ -117,6 +117,7 @@ return {
 
       cmp.setup({
         sources = {
+          {name = 'copilot'},
           {name = 'nvim_lsp'},
           {name = 'luasnip'},
         },
@@ -344,11 +345,20 @@ return {
 
   -- Copilot
   {
-    "github/copilot.vim",
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
     config = function()
-      vim.g.copilot_assume_mapped = 1
-      vim.g.copilot_node_command = vim.fn.expand("~/miniconda3/envs/nvim3/bin/node")
-      vim.keymap.set("i", "<M-Down>", "<Plug>(copilot-accept-line)", { silent = true })
+      require("copilot").setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      })
     end,
+  }, 
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function ()
+      require("copilot_cmp").setup()
+    end
   },
 }
