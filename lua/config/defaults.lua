@@ -7,10 +7,6 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false -- disable folding at startup
 
--- Highlight trailing spaces
---vim.cmd([[highlight TrailingSpaces ctermbg=red guibg=red]])
---vim.cmd([[match TrailingSpaces /\s\+$/]])
-
 -- Clipboard integration with tmux (wayland)
 vim.keymap.set("v", "<C-c>", [[:w !wl-copy<CR><CR>]], { noremap = true, silent = true })
 vim.keymap.set("n", "<C-v>", [[:r !wl-paste<CR>]], { noremap = true, silent = true })
@@ -20,5 +16,8 @@ vim.keymap.set("n", "Y", ":yank<CR>", { noremap = true, silent = true })
 vim.g.python3_host_prog = vim.fn.expand("~/miniconda3/envs/nvim3/bin/python")
 vim.g.node_host_prog = vim.fn.expand("~/miniconda3/envs/nvim3/bin/neovim-node-host")
 
--- Better diagnostics output
-vim.diagnostic.config({ virtual_lines = true })
+-- Show diagnostics in the same line
+vim.diagnostic.config({ virtual_text = true })
+
+-- Show round border around floating windows
+vim.o.winborder = 'rounded'
