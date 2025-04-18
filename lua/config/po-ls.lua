@@ -23,6 +23,7 @@ null_ls.register({
     args          = { "$FILENAME" },
     format        = "line",          -- FILE:LINE:COL: {warning|error}: MSG
     to_stdin      = false,
+    to_temp_file  = true,
     on_output     = h.diagnostics.from_patterns({
       {
         pattern = "([^:]+):(%d+):(%d+):%s+info:%s+(.*)",
@@ -42,4 +43,10 @@ null_ls.register({
     }),
     check_exit_code = function() return true end, -- we parse stdout only
   }),
+})
+
+-- -- (optional) a very light debounce so we don't spawn po‑lint *too* often
+null_ls.setup({
+  debounce = 250,          -- ms between the last keystroke and lint run
+  update_in_insert = false -- wait until you leave insert mode
 })
