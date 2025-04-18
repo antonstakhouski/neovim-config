@@ -25,7 +25,7 @@ vim.o.winborder = 'rounded'
 -- somewhere early in your init.lua
 if vim.filetype then
   vim.filetype.add({
-    extension = { html = "html" },   -- *.html  → "html"
+    extension = { html = "jinja" },   -- *.html  → "html"
     -- (you can also add `filename = { … }` or `pattern = { … }` here)
   })
 end

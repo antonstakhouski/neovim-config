@@ -25,6 +25,11 @@ null_ls.register({
     to_stdin      = false,
     on_output     = h.diagnostics.from_patterns({
       {
+        pattern = "([^:]+):(%d+):(%d+):%s+info:%s+(.*)",
+        groups  = { "filename", "row", "col", "message" },
+        severity = vim.diagnostic.severity.INFO,
+      },
+      {
         pattern = "([^:]+):(%d+):(%d+):%s+warning:%s+(.*)",
         groups  = { "filename", "row", "col", "message" },
         severity = vim.diagnostic.severity.WARN,
