@@ -21,31 +21,6 @@ return {
           end
         end,
       })
-
-      null_ls.register({
-        name     = "po-lint",
-        method   = null_ls.methods.DIAGNOSTICS,
-        filetypes= { "po" },
-        generator = h.generator_factory({
-          command       = "po-lint",
-          args          = { "$FILENAME" },
-          format        = "line",          -- FILE:LINE:COL: {warning|error}: MSG
-          to_stdin      = false,
-          on_output     = h.diagnostics.from_patterns({
-            {
-              pattern = "([^:]+):(%d+):(%d+):%s+warning:%s+(.*)",
-              groups  = { "filename", "row", "col", "message" },
-              severity = vim.diagnostic.severity.WARN,
-            },
-            {
-              pattern = "([^:]+):(%d+):(%d+):%s+error:%s+(.*)",
-              groups  = { "filename", "row", "col", "message" },
-              severity = vim.diagnostic.severity.ERROR,
-            },
-          }),
-          check_exit_code = function() return true end, -- we parse stdout only
-        }),
-      })
     end,
   },
 }
