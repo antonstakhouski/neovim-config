@@ -28,11 +28,6 @@ return {
         highlight = {
           enable = true,
 
-          -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-          -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-          -- the name of the parser)
-          -- list of language that will be disabled
-          disable = { "tex" },
           -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
           disable = function(lang, buf)
             local max_filesize = 100 * 1024 -- 100 KB
@@ -49,38 +44,6 @@ return {
           additional_vim_regex_highlighting = false,
         },
       }
-    end,
-  },
-  -- TODO: works not very good
-  {
-    "HiPhish/jinja.vim",
-    config = function()
-      local autocmd = vim.api.nvim_create_autocmd
-      local augroup = vim.api.nvim_create_augroup
-
-      -- Adjust filetype on *.html for Jinja
-      autocmd({ "BufRead", "BufNewFile" }, {
-        pattern = "*.html",
-        callback = function()
-          vim.fn["jinja#AdjustFiletype"]()
-        end,
-      })
-
-      -- One-time setup to handle missing Treesitter parser for jinja
-      autocmd("FileType", {
-        group = augroup("JinjaSyntaxFix", { clear = true }),
-        callback = function(args)
-          if vim.b.jinja_syntax_autocmd_loaded then return end
-
-          local has_treesitter = vim.treesitter.language.get_lang("jinja") ~= nil
-
-          if not has_treesitter and vim.bo[args.buf].filetype ~= "" then
-            vim.bo[args.buf].syntax = "on"
-          end
-
-          vim.b.jinja_syntax_autocmd_loaded = true
-        end,
-      })
     end,
   },
 }

@@ -21,3 +21,11 @@ vim.diagnostic.config({ virtual_text = true })
 
 -- Show round border around floating windows
 vim.o.winborder = 'rounded'
+
+-- somewhere early in your init.lua
+if vim.filetype then
+  vim.filetype.add({
+    extension = { html = "html" },   -- *.html  → "html"
+    -- (you can also add `filename = { … }` or `pattern = { … }` here)
+  })
+end
