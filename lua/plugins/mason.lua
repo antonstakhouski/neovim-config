@@ -28,15 +28,10 @@ return {
         settings = {
           workingDirectory = { mode = 'location' }, -- Use the config file's location
         },
-        filetypes = { "scss", "javascript", "typescript" }, -- Add SCSS to the list of filetypes
         on_attach = function(client, bufnr)
-          -- Format on save
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.format({ async = false })
-            end,
-          })
+          -- Turn OFF formatting so ESLint only provides diagnostics/code-actions
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
         end,
       }
     end,

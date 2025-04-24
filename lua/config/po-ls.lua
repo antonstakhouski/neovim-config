@@ -14,6 +14,7 @@ vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
 local null_ls = require('null-ls')
 local h = require("null-ls.helpers")
 
+-- TODO: figure out, why null_ls don't respect severity levels
 null_ls.register({
   name     = "po-lint",
   method   = null_ls.methods.DIAGNOSTICS,
