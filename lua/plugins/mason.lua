@@ -27,11 +27,29 @@ return {
         end,
         settings = {
           workingDirectory = { mode = 'location' }, -- Use the config file's location
+          format = { enable = true },
         },
         on_attach = function(client, bufnr)
-          -- Turn OFF formatting so ESLint only provides diagnostics/code-actions
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capabilities.documentRangeFormattingProvider = false
+          ---------------------------------------------------------------------------
+          -- 1. keep ESLint’s formatting capability ON
+          ---------------------------------------------------------------------------
+          client.server_capabilities.documentFormattingProvider = true
+
+          ---------------------------------------------------------------------------
+          -- 2. format-on-save for ESLint only
+          ---------------------------------------------------------------------------
+          local eslint_grp = vim.api.nvim_create_augroup("EslintFix", { clear = true })
+          vim.api.nvim_clear_autocmds({ group = eslint_grp, buffer = bufnr })
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            group   = eslint_grp,
+            buffer  = bufnr,
+            callback = function()
+              vim.lsp.buf.format({
+                bufnr  = bufnr,
+                filter = function(c) return c.name == "eslint" end,  -- << ESLint only
+              })
+            end,
+          })
         end,
       }
     end,
