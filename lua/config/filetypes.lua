@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "tex", "css", "scss", "json", "lua",
     "javascript", "javascriptreact",
     "typescript", "typescriptreact",
-    "htmldjango", "html", "svg", "vim"
+    "htmldjango", "jinja", "html", "svg", "vim"
   },
   callback = function()
     vim.opt_local.tabstop = 2
