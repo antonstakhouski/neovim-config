@@ -17,6 +17,17 @@ return {
 
       local lspconfig = require('lspconfig')
 
+      -- Setup typescript-language-server
+      lspconfig.ts_ls.setup {
+        settings = {
+          typescript = {
+            preferences = {
+              preferTypeOnlyAutoImports = true,
+            },
+          },
+        },
+      }
+
       -- Setup eslint-lsp
       lspconfig.eslint.setup {
         -- Custom function to set the root directory
