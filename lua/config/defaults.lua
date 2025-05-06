@@ -35,3 +35,5 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "po",
   callback = function() require("po_jump").setup() end,
 })
+
+vim.opt.completeopt:append("popup")
