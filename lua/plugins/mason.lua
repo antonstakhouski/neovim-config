@@ -1,8 +1,8 @@
 return {
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason-lspconfig.nvim",
       "neovim/nvim-lspconfig",
       "VonHeikemen/lsp-zero.nvim",
     },
@@ -10,6 +10,12 @@ return {
       require("mason").setup()
 
       require("mason-lspconfig").setup({
+        automatic_enable = {
+          exclude = {
+            "ts_ls",
+            "eslint",
+          }
+        },
         handlers = {
           require("lsp-zero").default_setup,
         }
