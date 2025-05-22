@@ -1,5 +1,4 @@
 return {
-  { "L3MON4D3/LuaSnip" },
   {
     "hrsh7th/nvim-cmp",
     -- these dependencies will only be loaded when cmp loads
@@ -8,13 +7,20 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "VonHeikemen/lsp-zero.nvim",
       "onsails/lspkind.nvim",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+      "mlaursen/vim-react-snippets",
     },
     config = function()
+      require("vim-react-snippets").lazy_load()
+
+      -- if you do not want to wrap all props in `Readonly<T>`
+      local config = require("vim-react-snippets.config")
+      config.readonly_props = false
+
       local cmp = require('cmp')
       local cmp_action = require('lsp-zero').cmp_action()
       local cmp_format = require('lsp-zero').cmp_format()
-
-      require('luasnip.loaders.from_vscode').lazy_load()
 
       local has_words_before = function()
         if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
@@ -24,6 +30,20 @@ return {
 
       local lspkind = require('lspkind')
 
+      -- luasnip setup
+      local ls = require("luasnip")
+
+      vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+      vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
+      vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+
+      vim.keymap.set({"i", "s"}, "<C-E>", function()
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end, {silent = true})
+
+      -- cmp setup
       cmp.setup({
         sources = {
           {name = 'copilot'},
@@ -64,6 +84,4 @@ return {
       })
     end,
   },
-  { "saadparwaiz1/cmp_luasnip" },
-  { "antonstakhouski/vim-react-snippets" },
 }
