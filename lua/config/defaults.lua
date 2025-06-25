@@ -22,13 +22,20 @@ vim.diagnostic.config({ virtual_text = true })
 -- Show round border around floating windows
 vim.o.winborder = 'rounded'
 
--- somewhere early in your init.lua
 if vim.filetype then
   vim.filetype.add({
     extension = { html = "jinja" },   -- *.html  → "html"
     -- (you can also add `filename = { … }` or `pattern = { … }` here)
   })
 end
+
+-- Auto-detect filetype for .gitlab-ci.yml
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+  pattern = ".gitlab-ci.yml",
+  callback = function()
+    vim.bo.filetype = "yaml.gitlab"
+  end,
+})
 
 -- Jump into .po comments
 vim.api.nvim_create_autocmd("FileType", {
